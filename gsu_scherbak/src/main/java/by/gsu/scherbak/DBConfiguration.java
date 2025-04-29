@@ -1,15 +1,20 @@
-import java.io.FileInputStream;
+package by.gsu.scherbak;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
 public class DBConfiguration {
-    public static Connection establishConnection(String fileName) throws IOException, SQLException {
+    public static Connection establishConnection() throws IOException, SQLException {
         Properties props = new Properties();
-        try (FileInputStream fis = new FileInputStream(fileName)) {
-            props.load(fis);
+        try (InputStream input = DBConfiguration.class.getClassLoader().getResourceAsStream("configuration.properties")) {
+            if (input == null) {
+                throw new RuntimeException("Файл configuration.properties не найден в resources");
+            }
+            props.load(input);
         }
 
         String url = props.getProperty("db.url");
