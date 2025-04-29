@@ -2,7 +2,7 @@ package by.gsu.scherbak.Table_DAO;
 
 import by.gsu.scherbak.CRUD_interface.CRUDable;
 
-public class shipType implements CRUDable {
+public class shipTypeDAO implements CRUDable {
 
     @Override
     public void insertRecords() {
