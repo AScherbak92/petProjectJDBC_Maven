@@ -1,5 +1,6 @@
 package by.gsu.scherbak;
 
+import by.gsu.scherbak.Database.DBConfiguration;
 import by.gsu.scherbak.Table_DAO.MooringDAO;
 import by.gsu.scherbak.Table_DAO.ShipDAO;
 import by.gsu.scherbak.Table_DAO.ShipTypeDAO;

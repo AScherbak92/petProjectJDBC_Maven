@@ -1,38 +1,47 @@
 package by.gsu.scherbak;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import by.gsu.scherbak.Database.DBConfiguration;
+import by.gsu.scherbak.Table_DAO.MooringDAO;
+import by.gsu.scherbak.Table_DAO.ShipDAO;
+import by.gsu.scherbak.Table_DAO.ShipTypeDAO;
+import by.gsu.scherbak.Table_Mapping.ShipMap;
+import by.gsu.scherbak.Table_Mapping.ShipTypeMap;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.*;
+class AppTest {
+
+    private ShipTypeMap testShipType;
+    private ShipMap testShip;
+
+    @BeforeEach
+    void setUp() {
+        testShipType = new ShipTypeMap(15, "TEST");
     }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
+    @Test
+    void main() throws SQLException, IOException {
+        try (Connection connection = DBConfiguration.establishConnection()){
+            ShipDAO shipTable = new ShipDAO();
+            ShipTypeDAO typeTable = new ShipTypeDAO();
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
+            typeTable.insertRecords(connection, testShipType);
+            testShip = new ShipMap(7, 15, 1000, "TEST SHIP");
+            shipTable.insertRecords(connection, testShip);
+
+            PreparedStatement deleteShip = connection.prepareStatement("DELETE FROM ship WHERE id = ?");
+            deleteShip.setInt(1, 7);
+            deleteShip.executeUpdate();
+
+            PreparedStatement deleteType = connection.prepareStatement("DELETE FROM shipType WHERE id = ?");
+            deleteType.setInt(1, 15);
+            deleteType.executeUpdate();
+        }
     }
 }

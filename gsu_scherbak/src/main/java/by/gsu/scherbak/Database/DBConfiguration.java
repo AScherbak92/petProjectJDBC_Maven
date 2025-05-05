@@ -1,4 +1,4 @@
-package by.gsu.scherbak;
+package by.gsu.scherbak.Database;
 
 import java.io.IOException;
 import java.io.InputStream;
