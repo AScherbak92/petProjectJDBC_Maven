@@ -15,18 +15,18 @@ public class ShipTypeDAO implements CRUDable<ShipTypeMap> {
     //Добавление записи в таблицу shipType
     @Override
     public void insertRecords(Connection connection, ShipTypeMap obj) throws SQLException {
+        int rows;
         String sql = "INSERT INTO shipType (id, type_name) VALUES (?, ?)";
-
         PreparedStatement statement = connection.prepareStatement(sql);
+
         statement.setInt(1, obj.getId());
         statement.setString(2, obj.getTypeName());
 
-        int rows = statement.executeUpdate();
+        rows = statement.executeUpdate();
 
         if(rows > 0){
             System.out.println("Запись была добавлена.");
-        }
-        else{
+        } else{
             System.out.println("Произошла ошибка при добавлении записи.");
         }
     }
@@ -34,18 +34,19 @@ public class ShipTypeDAO implements CRUDable<ShipTypeMap> {
     //Удаление записи из таблицы shipType
     @Override
     public void deleteRecords(Connection connection) throws SQLException {
+        int id;
+        int rowsAffected;
         Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Введите id записи для удаления: ");
-        int id = scanner.nextInt();
-
         PreparedStatement statement = connection.prepareStatement(
                 "DELETE FROM shipType WHERE id = ?"
         );
 
+        System.out.println("Введите id записи для удаления: ");
+        id = scanner.nextInt();
+
         statement.setInt(1, id);
 
-        int rowsAffected = statement.executeUpdate();
+        rowsAffected = statement.executeUpdate();
 
         if(rowsAffected > 0){
             System.out.println("Запись успешно удалена!");
@@ -57,18 +58,17 @@ public class ShipTypeDAO implements CRUDable<ShipTypeMap> {
     //Редактирование записи в таблице shipType
     @Override
     public void editRecords(Connection connection, ShipTypeMap obj) throws SQLException {
+        String newName;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Введите новое название для вида судна: ");
-
-        String newName = scanner.nextLine();
-        obj.setTypeName(newName);
-
         PreparedStatement statement = connection.prepareStatement(
                 "UPDATE shipType SET type_name = ? WHERE id = ?"
         );
 
-        System.out.println("ID = " + obj.getId());
+        System.out.println("Введите новое название для вида судна: ");
+        newName = scanner.nextLine();
+        obj.setTypeName(newName);
 
+        System.out.println("ID = " + obj.getId());
 
         statement.setString(1, obj.getTypeName());
         statement.setInt(2, obj.getId());
@@ -92,15 +92,17 @@ public class ShipTypeDAO implements CRUDable<ShipTypeMap> {
     //Фильтрация записей из тaблицы shipType
     @Override
     public void filterRecords(Connection connection) throws SQLException {
+        String userInput;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Введите название вида для фильтрации: ");
-        String userInput = scanner.nextLine();
-
         String sql = "SELECT * FROM shipType WHERE type_name = ?";
-
+        ResultSet set;
         PreparedStatement statement = connection.prepareStatement(sql);
+
+        System.out.println("Введите название вида для фильтрации: ");
+        userInput = scanner.nextLine();
+
         statement.setString(1, userInput);
-        ResultSet set = statement.executeQuery();
+        set = statement.executeQuery();
 
         System.out.println("\nТАБЛИЦА ВИД СУДНА");
         System.out.println("|---|------------------------------------|");

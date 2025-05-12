@@ -7,7 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class MooringMap implements Mappable {
-    private int id, idShip;
+    private int id;
+    private int idShip;
     private String mooringDate;
 
     //Конструктор, геттеры, сеттеры
@@ -48,17 +49,20 @@ public class MooringMap implements Mappable {
     @Override
     public void createObject() {
         Scanner scanner = new Scanner(System.in);
+        int id;
+        int idShip;
+        String mooringDate;
 
         System.out.println("Введите желаемый id для швартовки: ");
-        int id = scanner.nextInt();
+        id = scanner.nextInt();
         scanner.nextLine();
 
         System.out.println("Введите желаемый id судна для швартовки: ");
-        int idShip = scanner.nextInt();
+        idShip = scanner.nextInt();
         scanner.nextLine();
 
         System.out.println("Введите желаемую дату и время швартовки (в формате yyyy-MM-dd): ");
-        String mooringDate = scanner.nextLine();
+        mooringDate = scanner.nextLine();
 
         this.id = id;
         this.idShip = idShip;
@@ -69,11 +73,13 @@ public class MooringMap implements Mappable {
     //Взятие записи из таблицы по id
     @Override
     public void getById(int id, Connection connection) throws SQLException {
+        ResultSet set;
         PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM mooring WHERE id = ?"
         );
+
         statement.setInt(1, id);
-        ResultSet set = statement.executeQuery();
+        set = statement.executeQuery();
 
         if(set.next()){
             int resultId = set.getInt("id");
@@ -87,8 +93,7 @@ public class MooringMap implements Mappable {
             this.id = resultId;
             this.idShip = resultShipId;
             this.mooringDate = resultMooringDate;
-        }
-        else{
+        } else{
             System.out.println("Запись с указанным id не была найдена.");
 
         }

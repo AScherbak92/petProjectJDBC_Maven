@@ -14,8 +14,8 @@ public class ShipDAO implements CRUDable<ShipMap> {
     //Добавление записи в таблицу ship
     @Override
     public void insertRecords(Connection connection, ShipMap obj) throws SQLException {
+        int rows;
         String sql = "INSERT INTO ship (id, ship_name, idType, ship_tonnage) VALUES (?, ?, ?, ?)";
-
         PreparedStatement statement = connection.prepareStatement(sql);
 
         statement.setInt(1, obj.getId());
@@ -23,12 +23,11 @@ public class ShipDAO implements CRUDable<ShipMap> {
         statement.setInt(3, obj.getIdType());
         statement.setInt(4, obj.getShipTonnage());
 
-        int rows = statement.executeUpdate();
+        rows = statement.executeUpdate();
 
         if(rows > 0){
             System.out.println("Запись была добавлена.");
-        }
-        else{
+        } else{
             System.out.println("Произошла ошибка при добавлении записи.");
         }
     }
@@ -36,18 +35,19 @@ public class ShipDAO implements CRUDable<ShipMap> {
     //Удаление записи из таблицы ship
     @Override
     public void deleteRecords(Connection connection) throws SQLException {
+        int id;
+        int rowsAffected;
         Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Введите id записи для удаления: ");
-        int id = scanner.nextInt();
-
         PreparedStatement statement = connection.prepareStatement(
                 "DELETE FROM ship WHERE id = ?"
         );
 
+        System.out.println("Введите id записи для удаления: ");
+        id = scanner.nextInt();
+
         statement.setInt(1, id);
 
-        int rowsAffected = statement.executeUpdate();
+        rowsAffected = statement.executeUpdate();
 
         if(rowsAffected > 0){
             System.out.println("Запись успешно удалена!");
@@ -59,23 +59,26 @@ public class ShipDAO implements CRUDable<ShipMap> {
     //Редактирование записи в таблице ship
     @Override
     public void editRecords(Connection connection, ShipMap obj) throws SQLException {
+        String newName;
+        int newIdType;
+        int newTonnage;
         Scanner scanner = new Scanner(System.in);
+        PreparedStatement statement = connection.prepareStatement(
+                "UPDATE ship SET ship_name = ?, ship_tonnage = ?, idType = ? WHERE id = ?"
+        );
+
         System.out.println("Введите новое название для судна: ");
-        String newName = scanner.nextLine();
+        newName = scanner.nextLine();
         obj.setShipName(newName);
 
         System.out.println("Введите новый ID типа: ");
-        int newIdType = scanner.nextInt();
+        newIdType = scanner.nextInt();
         obj.setIdType(newIdType);
         scanner.nextLine();
 
         System.out.println("Введите новый тоннаж: ");
-        int newTonnage = scanner.nextInt();
+        newTonnage = scanner.nextInt();
         obj.setShipTonnage(newTonnage);
-
-        PreparedStatement statement = connection.prepareStatement(
-                "UPDATE ship SET ship_name = ?, ship_tonnage = ?, idType = ? WHERE id = ?"
-        );
 
         statement.setString(1, obj.getShipName());
         statement.setInt(2, obj.getShipTonnage());
@@ -105,15 +108,17 @@ public class ShipDAO implements CRUDable<ShipMap> {
     //Фильтрация записей из тaблицы ship
     @Override
     public void filterRecords(Connection connection) throws SQLException {
+        int userInput;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Введите тоннаж для фильтрации: ");
-        int userInput = scanner.nextInt();
-
         String sql = "SELECT * FROM ship WHERE ship_tonnage = ?";
-
+        ResultSet set;
         PreparedStatement statement = connection.prepareStatement(sql);
+
+        System.out.println("Введите тоннаж для фильтрации: ");
+        userInput = scanner.nextInt();
+
         statement.setInt(1, userInput);
-        ResultSet set = statement.executeQuery();
+        set = statement.executeQuery();
 
         System.out.println("\nТАБЛИЦА СУДА");
         System.out.println("|-----|----------------------|--------|-------------|");

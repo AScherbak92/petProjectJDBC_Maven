@@ -11,20 +11,19 @@ public class MooringDAO implements CRUDable<MooringMap> {
     //Добавление записи в таблицу mooring
     @Override
     public void insertRecords(Connection connection, MooringMap obj) throws SQLException {
+        int rows;
         String sql = "INSERT INTO mooring (id, idShip, mooring_date) VALUES (?, ?, ?)";
-
         PreparedStatement statement = connection.prepareStatement(sql);
 
         statement.setInt(1, obj.getId());
         statement.setInt(2, obj.getIdShip());
         statement.setDate(3, Date.valueOf(obj.getMooringDate()));
 
-        int rows = statement.executeUpdate();
+        rows = statement.executeUpdate();
 
         if(rows > 0){
             System.out.println("Запись была добавлена.");
-        }
-        else{
+        } else{
             System.out.println("Произошла ошибка при добавлении записи.");
         }
     }
@@ -32,18 +31,19 @@ public class MooringDAO implements CRUDable<MooringMap> {
     //Удаление записи из таблицы mooring
     @Override
     public void deleteRecords(Connection connection) throws SQLException {
+        int id;
+        int rowsAffected;
         Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Введите id записи для удаления: ");
-        int id = scanner.nextInt();
-
         PreparedStatement statement = connection.prepareStatement(
                 "DELETE FROM mooring WHERE id = ?"
         );
 
+        System.out.println("Введите id записи для удаления: ");
+        id = scanner.nextInt();
+
         statement.setInt(1, id);
 
-        int rowsAffected = statement.executeUpdate();
+        rowsAffected = statement.executeUpdate();
 
         if(rowsAffected > 0){
             System.out.println("Запись успешно удалена!");
@@ -55,19 +55,21 @@ public class MooringDAO implements CRUDable<MooringMap> {
     //Редактирование записи в таблице mooring
     @Override
     public void editRecords(Connection connection, MooringMap obj) throws SQLException {
+        int newIdShip;
+        String newDate;
         Scanner scanner = new Scanner(System.in);
+        PreparedStatement statement = connection.prepareStatement(
+                "UPDATE mooring SET idShip = ?, mooring_date = ? WHERE id = ?"
+        );
+
         System.out.println("Введите новое ID судна: ");
-        int newIdShip = scanner.nextInt();
+        newIdShip = scanner.nextInt();
         obj.setIdShip(newIdShip);
         scanner.nextLine();
 
         System.out.println("Введите новую дату в формате yyyy-MM-dd: ");
-        String newDate = scanner.nextLine();
+        newDate = scanner.nextLine();
         obj.setMooringDate(newDate);
-
-        PreparedStatement statement = connection.prepareStatement(
-                "UPDATE mooring SET idShip = ?, mooring_date = ? WHERE id = ?"
-        );
 
         statement.setInt(1, obj.getIdShip());
         statement.setString(2, obj.getMooringDate());
@@ -95,15 +97,17 @@ public class MooringDAO implements CRUDable<MooringMap> {
     //Фильтрация записей из тaблицы mooring
     @Override
     public void filterRecords(Connection connection) throws SQLException {
+        String userInput;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Введите дату для фильтрации: ");
-        String userInput = scanner.nextLine();
-
         String sql = "SELECT * FROM mooring WHERE mooring_date = ?";
-
         PreparedStatement statement = connection.prepareStatement(sql);
+        ResultSet set;
+
+        System.out.println("Введите дату для фильтрации: ");
+        userInput = scanner.nextLine();
+
         statement.setString(1, userInput);
-        ResultSet set = statement.executeQuery();
+        set = statement.executeQuery();
 
         System.out.println("\nТАБЛИЦА ШВАРТОВОК");
         System.out.println("|-----|--------|---------------------|");

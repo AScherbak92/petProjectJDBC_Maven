@@ -30,16 +30,16 @@ class AppTest {
         try (Connection connection = DBConfiguration.establishConnection()){
             ShipDAO shipTable = new ShipDAO();
             ShipTypeDAO typeTable = new ShipTypeDAO();
+            PreparedStatement deleteShip = connection.prepareStatement("DELETE FROM ship WHERE id = ?");
+            PreparedStatement deleteType = connection.prepareStatement("DELETE FROM shipType WHERE id = ?");
 
             typeTable.insertRecords(connection, testShipType);
             testShip = new ShipMap(7, 15, 1000, "TEST SHIP");
             shipTable.insertRecords(connection, testShip);
 
-            PreparedStatement deleteShip = connection.prepareStatement("DELETE FROM ship WHERE id = ?");
             deleteShip.setInt(1, 7);
             deleteShip.executeUpdate();
 
-            PreparedStatement deleteType = connection.prepareStatement("DELETE FROM shipType WHERE id = ?");
             deleteType.setInt(1, 15);
             deleteType.executeUpdate();
         }

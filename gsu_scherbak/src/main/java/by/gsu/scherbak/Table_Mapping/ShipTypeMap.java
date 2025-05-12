@@ -38,13 +38,15 @@ public class ShipTypeMap implements Mappable {
     @Override
     public void createObject() {
         Scanner scanner = new Scanner(System.in);
+        int id;
+        String typeName;
 
         System.out.println("Введите желаемый id для типа судна: ");
-        int id = scanner.nextInt();
+        id = scanner.nextInt();
         scanner.nextLine();
 
         System.out.println("Введите желаемое название вида судна: ");
-        String typeName = scanner.nextLine();
+        typeName = scanner.nextLine();
 
         this.id = id;
         this.typeName = typeName;
@@ -54,11 +56,13 @@ public class ShipTypeMap implements Mappable {
     //Взятие записи из таблицы по id
     @Override
     public void getById(int id, Connection connection) throws SQLException {
+        ResultSet set;
         PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM shipType WHERE id = ?"
         );
+
         statement.setInt(1, id);
-        ResultSet set = statement.executeQuery();
+        set = statement.executeQuery();
 
         if (set.next()){
             int resultId = set.getInt("id");
@@ -67,8 +71,7 @@ public class ShipTypeMap implements Mappable {
 
             this.id = resultId;
             this.typeName = resultName;
-        }
-        else{
+        } else{
             System.out.println("Запись с указанным id не была найдена.");
 
         }

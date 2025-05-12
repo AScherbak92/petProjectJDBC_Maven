@@ -6,7 +6,9 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class ShipMap implements Mappable {
-    private int id, idType, shipTonnage;
+    private int id;
+    private int idType;
+    private int shipTonnage;
     private String shipName;
 
     //Конструктор, геттеры, сеттеры
@@ -56,21 +58,25 @@ public class ShipMap implements Mappable {
     @Override
     public void createObject() {
         Scanner scanner = new Scanner(System.in);
+        int id;
+        int idType;
+        int shipTonnage;
+        String shipName;
 
         System.out.println("Введите желаемый id для судна: ");
-        int id = scanner.nextInt();
+        id = scanner.nextInt();
         scanner.nextLine();
 
         System.out.println("Введите желаемый id типа вида для судна: ");
-        int idType = scanner.nextInt();
+        idType = scanner.nextInt();
         scanner.nextLine();
 
         System.out.println("Введите желаемый тоннаж для судна: ");
-        int shipTonnage = scanner.nextInt();
+        shipTonnage = scanner.nextInt();
         scanner.nextLine();
 
         System.out.println("Введите желаемое название для судна: ");
-        String shipName = scanner.nextLine();
+        shipName = scanner.nextLine();
 
         this.id = id;
         this.idType = idType;
@@ -82,11 +88,13 @@ public class ShipMap implements Mappable {
     //Взятие записи из таблицы по id
     @Override
     public void getById(int id, Connection connection) throws SQLException {
+        ResultSet set;
         PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM ship WHERE id = ?"
         );
+
         statement.setInt(1, id);
-        ResultSet set = statement.executeQuery();
+        set = statement.executeQuery();
 
         if (set.next()){
             int resultId = set.getInt("id");
@@ -99,8 +107,7 @@ public class ShipMap implements Mappable {
             this.idType = resultTypeId;
             this.shipName = resultName;
             this.shipTonnage = resultTonnage;
-        }
-        else{
+        } else{
             System.out.println("Запись с указанным id не была найдена.");
 
         }
